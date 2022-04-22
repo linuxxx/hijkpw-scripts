@@ -202,13 +202,8 @@ getData() {
             CERT_FILE="/etc/trojan-go/${DOMAIN}.pem"
             KEY_FILE="/etc/trojan-go/${DOMAIN}.key"
         else
-            resolve=`curl -sL https://hijk.art/hostip.php?d=${DOMAIN}`
+            resolve=`echo -n ${resolve} | grep ${IP}`
             res=`echo -n ${resolve} | grep ${IP}`
-            if [[ -z "${res}" ]]; then
-                echo " ${DOMAIN} 解析结果：${resolve}"
-                echo -e " ${RED}伪装域名未解析到当前服务器IP(${IP})!${PLAIN}"
-                exit 1
-            fi
         fi
     else
         DOMAIN=`grep sni $CONFIG_FILE | cut -d\" -f4`
@@ -292,7 +287,7 @@ getData() {
                 index=`shuf -i0-${len} -n1`
                 PROXY_URL=${SITES[$index]}
                 host=`echo ${PROXY_URL} | cut -d/ -f3`
-                ip=`curl -sL https://hijk.art/hostip.php?d=${host}`
+                ip=`echo -n ${resolve} | grep ${IP}`
                 res=`echo -n ${ip} | grep ${host}`
                 if [[ "${res}" = "" ]]; then
                     echo "$ip $host" >> /etc/hosts
